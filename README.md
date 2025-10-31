@@ -1,6 +1,18 @@
 # GasolinaSmart
 
+[![Deploy to GitHub Pages](https://github.com/ComputingVictor/Gasolina_Smart/actions/workflows/deploy.yml/badge.svg)](https://github.com/ComputingVictor/Gasolina_Smart/actions/workflows/deploy.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![React](https://img.shields.io/badge/React-18.3.1-blue.svg)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.8.3-blue.svg)](https://www.typescriptlang.org/)
+[![Vite](https://img.shields.io/badge/Vite-5.4.19-646CFF.svg)](https://vitejs.dev/)
+
+🚀 **[Ver Aplicación en Vivo](https://computingvictor.github.io/Gasolina_Smart/)** 🚀
+
 Aplicación web para encontrar las gasolineras más baratas cerca de ti en España. Compara precios de combustible en tiempo real utilizando datos oficiales del Ministerio de Industria y Turismo.
+
+## 📸 Demo
+
+Visita la aplicación en vivo: **[https://computingvictor.github.io/Gasolina_Smart/](https://computingvictor.github.io/Gasolina_Smart/)**
 
 ## Descripción del Proyecto
 
@@ -23,7 +35,9 @@ El objetivo de GasolinaSmart es democratizar el acceso a información de precios
 - Búsqueda por geolocalización automática
 - Búsqueda manual por dirección o ciudad
 - Filtrado por tipo de combustible
-- Radio de búsqueda personalizable (5-50 km)
+- Radio de búsqueda personalizable (2.5-30 km)
+- **Calculadora de ahorro inteligente**: Calcula si vale la pena ir a una gasolinera más lejana considerando el coste del desplazamiento
+- Filtrado automático de estaciones de autobuses
 - Filtros por marca de estación
 - Filtro para gasolineras 24 horas
 - Ordenación por precio, distancia o nombre
