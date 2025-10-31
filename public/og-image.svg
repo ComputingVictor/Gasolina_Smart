@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#gradient)"/>
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Logo/Icon en la esquina -->
+  <circle cx="100" cy="100" r="60" fill="white" opacity="0.9"/>
+  <g transform="translate(50, 50)">
+    <!-- Surtidor simplificado -->
+    <rect x="30" y="60" width="35" height="40" fill="#667eea" rx="3"/>
+    <rect x="35" y="65" width="25" height="15" fill="white" rx="2"/>
+    <text x="47.5" y="77" font-family="Arial" font-size="8" fill="#10b981" font-weight="bold" text-anchor="middle">1.45€</text>
+    <path d="M 65 75 Q 75 73, 82 68" stroke="#667eea" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <rect x="80" y="65" width="12" height="7" fill="#667eea" rx="2"/>
+  </g>
+
+  <!-- Título Principal -->
+  <text x="600" y="220" font-family="system-ui, -apple-system, sans-serif" font-size="80" font-weight="bold" fill="white" text-anchor="middle">
+    GasolinaSmart
+  </text>
+
+  <!-- Subtítulo -->
+  <text x="600" y="300" font-family="system-ui, -apple-system, sans-serif" font-size="36" fill="white" opacity="0.95" text-anchor="middle">
+    Encuentra las gasolineras más baratas
+  </text>
+
+  <text x="600" y="350" font-family="system-ui, -apple-system, sans-serif" font-size="36" fill="white" opacity="0.95" text-anchor="middle">
+    cerca de ti en España
+  </text>
+
+  <!-- Features -->
+  <g transform="translate(300, 420)">
+    <rect x="0" y="0" width="600" height="120" fill="white" opacity="0.1" rx="10"/>
+
+    <text x="50" y="40" font-family="system-ui" font-size="24" fill="white" font-weight="600">
+      ✓ Precios en tiempo real
+    </text>
+
+    <text x="50" y="75" font-family="system-ui" font-size="24" fill="white" font-weight="600">
+      ✓ Datos oficiales del Ministerio
+    </text>
+
+    <text x="350" y="40" font-family="system-ui" font-size="24" fill="white" font-weight="600">
+      ✓ Calculadora de ahorro
+    </text>
+
+    <text x="350" y="75" font-family="system-ui" font-size="24" fill="white" font-weight="600">
+      ✓ Mapa interactivo
+    </text>
+  </g>
+
+  <!-- Footer -->
+  <text x="600" y="590" font-family="system-ui" font-size="20" fill="white" opacity="0.8" text-anchor="middle">
+    computingvictor.github.io/Gasolina_Smart
+  </text>
+</svg>
