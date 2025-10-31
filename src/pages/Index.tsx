@@ -6,6 +6,7 @@ import { FilterControls } from "@/components/FilterControls";
 import { MapComponent } from "@/components/MapComponent";
 import { StationsList } from "@/components/StationsList";
 import { toast } from "sonner";
+import { fetchWithRetry } from "@/lib/fetch-with-retry";
 
 const API_URL = 'https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/';
 const GEOCODING_API = 'https://nominatim.openstreetmap.org/search';
@@ -74,12 +75,29 @@ const Index = () => {
 
   const fetchStationsData = async () => {
     try {
-      const response = await fetch(API_URL);
+      const response = await fetchWithRetry(API_URL, {}, 3, 1000);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const data = await response.json();
       return data.ListaEESSPrecio || [];
     } catch (error) {
-      toast.error("Error al cargar los datos de gasolineras");
-      return [];
+      console.error("Error fetching stations:", error);
+      toast.error("Error al cargar los datos de gasolineras. Reintentando...");
+
+      // Reintento manual adicional después de 2 segundos
+      try {
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        const response = await fetch(API_URL);
+        const data = await response.json();
+        toast.success("Datos cargados correctamente");
+        return data.ListaEESSPrecio || [];
+      } catch (retryError) {
+        toast.error("No se pudieron cargar las gasolineras. Por favor, recarga la página.");
+        return [];
+      }
     }
   };
 

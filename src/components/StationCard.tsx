@@ -61,6 +61,8 @@ export const StationCard = ({ station, index, onNavigate, allStations = [] }: St
                   src={logo}
                   alt={station.brand || "Gasolinera"}
                   className="w-full h-full object-contain p-1"
+                  loading="lazy"
+                  decoding="async"
                 />
               </div>
 
