@@ -1,0 +1,170 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+
+    --card: 240 10% 8%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 240 10% 8%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 263 70% 60%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 263 70% 70%;
+
+    --secondary: 240 5% 26%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 240 5% 20%;
+    --muted-foreground: 240 5% 64%;
+
+    --accent: 263 70% 55%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 62.8% 50%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 240 5% 15%;
+    --input: 240 5% 15%;
+    --ring: 263 70% 60%;
+
+    --radius: 1rem;
+    
+    /* Premium gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(263 70% 50%) 0%, hsl(250 70% 55%) 50%, hsl(240 70% 60%) 100%);
+    --gradient-secondary: linear-gradient(180deg, hsl(240 10% 3.9%) 0%, hsl(240 10% 8%) 100%);
+    --gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+    
+    /* Shadows */
+    --shadow-premium: 0 20px 60px -10px hsl(263 70% 50% / 0.4);
+    --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.3);
+    --shadow-hover: 0 25px 70px -10px hsl(263 70% 50% / 0.6);
+    
+    /* Effects */
+    --transition-smooth: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    --backdrop-blur: blur(20px);
+    --glow-effect: 0 0 40px hsl(263 70% 60% / 0.6);
+
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+
+    --card: 240 10% 8%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 240 10% 8%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 263 70% 60%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 263 70% 70%;
+
+    --secondary: 240 5% 26%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 240 5% 20%;
+    --muted-foreground: 240 5% 64%;
+
+    --accent: 263 70% 55%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 62.8% 50%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 240 5% 15%;
+    --input: 240 5% 15%;
+    --ring: 263 70% 60%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Custom animations */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    filter: drop-shadow(0 0 20px hsl(263 70% 60% / 0.4));
+  }
+  50% {
+    filter: drop-shadow(0 0 40px hsl(263 70% 60% / 0.8));
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Glass morphism utility */
+.glass {
+  background: var(--gradient-glass);
+  backdrop-filter: var(--backdrop-blur);
+  -webkit-backdrop-filter: var(--backdrop-blur);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Leaflet map styles */
+.leaflet-container {
+  border-radius: var(--radius);
+  z-index: 1;
+}
+
+.leaflet-popup-content-wrapper {
+  @apply glass rounded-lg;
+}
