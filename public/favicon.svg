@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Fondo circular -->
+  <circle cx="50" cy="50" r="48" fill="#8b5cf6" stroke="#6d28d9" stroke-width="2"/>
+
+  <!-- Surtidor de gasolina -->
+  <!-- Base del surtidor -->
+  <rect x="30" y="60" width="25" height="28" fill="#fff" rx="2"/>
+
+  <!-- Pantalla del surtidor -->
+  <rect x="33" y="63" width="19" height="12" fill="#1e1b4b" rx="1"/>
+
+  <!-- Números en la pantalla -->
+  <text x="42.5" y="72" font-family="monospace" font-size="6" fill="#10b981" text-anchor="middle">1.45</text>
+
+  <!-- Botones -->
+  <rect x="35" y="77" width="5" height="3" fill="#ef4444" rx="1"/>
+  <rect x="42" y="77" width="5" height="3" fill="#22c55e" rx="1"/>
+
+  <!-- Manguera -->
+  <path d="M 55 70 Q 60 68, 63 65" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+  <!-- Pistola -->
+  <rect x="62" y="62" width="8" height="5" fill="#fff" rx="1"/>
+  <rect x="68" y="64" width="3" height="8" fill="#fff" rx="1"/>
+
+  <!-- Techo del surtidor -->
+  <path d="M 28 60 L 57 60 L 54 55 L 31 55 Z" fill="#fff"/>
+
+  <!-- Gota de combustible -->
+  <ellipse cx="42" cy="52" rx="2" ry="3" fill="#10b981"/>
+</svg>
