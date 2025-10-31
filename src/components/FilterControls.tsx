@@ -143,7 +143,7 @@ export const FilterControls = ({
             className="w-full h-12 glass border-white/20 hover:bg-white/10"
             onClick={() => {
               onFuelTypeChange("gasolina95");
-              onRadiusChange("10");
+              onRadiusChange("2.5");
               onBrandFilterChange("all");
               onScheduleFilterChange("all");
               onSortChange("price");

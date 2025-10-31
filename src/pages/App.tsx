@@ -40,7 +40,7 @@ const App = () => {
   
   // Filters
   const [fuelType, setFuelType] = useState("gasolina95");
-  const [radius, setRadius] = useState("10");
+  const [radius, setRadius] = useState("2.5");
   const [brandFilter, setBrandFilter] = useState("all");
   const [scheduleFilter, setScheduleFilter] = useState("all");
   const [sortBy, setSortBy] = useState("price");
@@ -104,11 +104,35 @@ const App = () => {
           brand: station.Rótulo?.toLowerCase() || '',
         };
       })
-      .filter((station: Station) => 
-        station.price < 999999 && 
-        station.distance !== undefined && 
-        station.distance <= maxRadius
-      );
+      .filter((station: Station) => {
+        // Filtrar estaciones con precios válidos y dentro del radio
+        if (station.price >= 999999 || station.distance === undefined || station.distance > maxRadius) {
+          return false;
+        }
+
+        // Filtrar estaciones de autobuses (plural y singular)
+        const name = station.name.toLowerCase();
+        const address = station.address.toLowerCase();
+        const isBusStation =
+          name.includes('estacion de autobuses') ||
+          name.includes('estación de autobuses') ||
+          name.includes('estacion autobuses') ||
+          name.includes('estación autobuses') ||
+          name.includes('estacion de autobus') ||
+          name.includes('estación de autobus') ||
+          name.includes('estacion autobus') ||
+          name.includes('estación autobus') ||
+          address.includes('estacion de autobuses') ||
+          address.includes('estación de autobuses') ||
+          address.includes('estacion autobuses') ||
+          address.includes('estación autobuses') ||
+          address.includes('estacion de autobus') ||
+          address.includes('estación de autobus') ||
+          address.includes('estacion autobus') ||
+          address.includes('estación autobus');
+
+        return !isBusStation;
+      });
 
     // Apply filters
     let filtered = processed;
