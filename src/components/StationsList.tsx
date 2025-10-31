@@ -54,6 +54,7 @@ export const StationsList = ({ stations, onNavigate }: StationsListProps) => {
           station={station}
           index={index}
           onNavigate={() => onNavigate(station)}
+          allStations={stations}
         />
       ))}
     </div>
