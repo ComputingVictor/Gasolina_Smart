@@ -1,73 +1,94 @@
-# Welcome to your Lovable project
+# GasolinaSmart
 
-## Project info
+Aplicación web para encontrar las gasolineras más baratas cerca de ti en España. Compara precios de combustible en tiempo real utilizando datos oficiales del Ministerio de Industria y Turismo.
 
-**URL**: https://lovable.dev/projects/24002ade-9932-447f-bc7d-9a6c1b3f00c1
+## Descripción del Proyecto
 
-## How can I edit this code?
+GasolinaSmart es una herramienta que permite a los usuarios localizar las estaciones de servicio más económicas en su área, ayudándoles a ahorrar dinero en cada repostaje. La aplicación ofrece:
 
-There are several ways of editing your application.
+- **Búsqueda por ubicación**: Usa tu geolocalización o busca por dirección
+- **Comparación de precios en tiempo real**: Datos actualizados del gobierno español
+- **Múltiples tipos de combustible**: Gasolina 95, 98, Gasóleo A, B y Premium
+- **Filtros avanzados**: Por marca, horario, radio de búsqueda y más
+- **Visualización en mapa**: Mapa interactivo con todas las estaciones cercanas
+- **Navegación integrada**: Abre la ruta directamente en Google Maps
 
-**Use Lovable**
+## Objetivo
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/24002ade-9932-447f-bc7d-9a6c1b3f00c1) and start prompting.
+El objetivo de GasolinaSmart es democratizar el acceso a información de precios de combustible, permitiendo a cualquier persona en España encontrar fácilmente las opciones más económicas cerca de su ubicación. En un contexto donde el precio del combustible puede variar significativamente entre estaciones, esta herramienta ayuda a los usuarios a tomar decisiones informadas y ahorrar en sus gastos de transporte.
 
-Changes made via Lovable will be committed automatically to this repo.
+## Características Principales
 
-**Use your preferred IDE**
+- Interfaz moderna y responsive
+- Búsqueda por geolocalización automática
+- Búsqueda manual por dirección o ciudad
+- Filtrado por tipo de combustible
+- Radio de búsqueda personalizable (5-50 km)
+- Filtros por marca de estación
+- Filtro para gasolineras 24 horas
+- Ordenación por precio, distancia o nombre
+- Mapa interactivo con marcadores
+- Lista detallada con información de cada estación
+- Navegación directa a Google Maps
+- Datos oficiales del Ministerio
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## Tecnologías Utilizadas
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- **Frontend**: React 18 + TypeScript
+- **Build Tool**: Vite
+- **Estilos**: Tailwind CSS
+- **Componentes UI**: shadcn/ui + Radix UI
+- **Mapas**: Leaflet + React-Leaflet
+- **Routing**: React Router DOM
+- **Gestión de Estado**: React Query
+- **Formularios**: React Hook Form + Zod
+- **Notificaciones**: Sonner
+- **Animaciones**: Framer Motion
 
-Follow these steps:
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+## Fuente de Datos
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+Los datos de precios de combustible se obtienen en tiempo real de la API oficial del Ministerio de Industria y Turismo de España:
+- API: `https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/`
 
-# Step 3: Install the necessary dependencies.
-npm i
+## Estructura del Proyecto
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+```
+src/
+├── components/        # Componentes React
+│   ├── ui/           # Componentes de interfaz reutilizables
+│   ├── HeroSection.tsx
+│   ├── FeaturesSection.tsx
+│   ├── SearchSection.tsx
+│   ├── FilterControls.tsx
+│   ├── MapComponent.tsx
+│   ├── StationsList.tsx
+│   └── StationCard.tsx
+├── pages/            # Páginas de la aplicación
+├── hooks/            # Custom React hooks
+└── main.tsx          # Punto de entrada
 ```
 
-**Edit a file directly in GitHub**
+## Contribuciones
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+Las contribuciones son bienvenidas. Si encuentras un bug o tienes una sugerencia:
 
-**Use GitHub Codespaces**
+1. Abre un issue describiendo el problema o mejora
+2. Haz fork del repositorio
+3. Crea una rama para tu feature (`git checkout -b feature/nueva-funcionalidad`)
+4. Commit tus cambios (`git commit -m 'Añade nueva funcionalidad'`)
+5. Push a la rama (`git push origin feature/nueva-funcionalidad`)
+6. Abre un Pull Request
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Licencia
 
-## What technologies are used for this project?
+Este proyecto es de código abierto y está disponible bajo la licencia MIT.
 
-This project is built with:
+## Autor
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+Desarrollado por [ComputingVictor](https://github.com/computingvictor)
 
-## How can I deploy this project?
+## Agradecimientos
 
-Simply open [Lovable](https://lovable.dev/projects/24002ade-9932-447f-bc7d-9a6c1b3f00c1) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+- Ministerio de Industria y Turismo de España por proporcionar los datos públicos
+- OpenStreetMap por el servicio de geocodificación
