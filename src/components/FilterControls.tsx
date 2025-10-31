@@ -72,6 +72,7 @@ export const FilterControls = ({
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
+              <SelectItem value="2.5">2.5 km</SelectItem>
               <SelectItem value="5">5 km</SelectItem>
               <SelectItem value="10">10 km</SelectItem>
               <SelectItem value="15">15 km</SelectItem>
