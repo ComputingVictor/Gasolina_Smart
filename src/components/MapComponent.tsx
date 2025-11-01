@@ -30,6 +30,7 @@ export const MapComponent = ({ stations, center, zoom = 13, radius = 10 }: MapCo
   const mapRef = useRef<L.Map | null>(null);
   const markersRef = useRef<L.Marker[]>([]);
   const circleRef = useRef<L.Circle | null>(null);
+  const userLocationMarkerRef = useRef<L.Marker | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -63,6 +64,37 @@ export const MapComponent = ({ stations, center, zoom = 13, radius = 10 }: MapCo
       weight: 2,
     }).addTo(mapRef.current);
 
+    // Clear existing user location marker
+    if (userLocationMarkerRef.current) {
+      userLocationMarkerRef.current.remove();
+    }
+
+    // Create custom icon for user location
+    const userIcon = L.divIcon({
+      className: 'custom-user-marker',
+      html: `
+        <div style="
+          width: 20px;
+          height: 20px;
+          background-color: #3b82f6;
+          border: 3px solid white;
+          border-radius: 50%;
+          box-shadow: 0 0 10px rgba(59, 130, 246, 0.6);
+        "></div>
+      `,
+      iconSize: [20, 20],
+      iconAnchor: [10, 10],
+    });
+
+    // Add user location marker
+    userLocationMarkerRef.current = L.marker(center, { icon: userIcon })
+      .addTo(mapRef.current)
+      .bindPopup(`
+        <div class="p-2">
+          <h3 class="font-bold text-lg" style="color: #3b82f6">Tu ubicación</h3>
+        </div>
+      `);
+
     // Clear existing markers
     markersRef.current.forEach((marker) => marker.remove());
     markersRef.current = [];
@@ -92,6 +124,9 @@ export const MapComponent = ({ stations, center, zoom = 13, radius = 10 }: MapCo
         markersRef.current = [];
         if (circleRef.current) {
           circleRef.current.remove();
+        }
+        if (userLocationMarkerRef.current) {
+          userLocationMarkerRef.current.remove();
         }
       }
     };
