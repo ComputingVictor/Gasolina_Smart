@@ -4,12 +4,15 @@ import path from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  // Configura la base para GitHub Pages
-  // Cambia 'Gasolina_Smart' por el nombre de tu repositorio
-  base: '/Gasolina_Smart/',
+  // Si estás en Railway, usa base: '/', si es GitHub Pages, usa '/Gasolina_Smart/'
+  base: process.env.RAILWAY_ENVIRONMENT ? '/' : '/Gasolina_Smart/',
   server: {
     host: "::",
     port: 8080,
+  },
+  preview: {
+    host: "0.0.0.0",
+    port: process.env.PORT ? parseInt(process.env.PORT) : 8080,
   },
   plugins: [
     react()
