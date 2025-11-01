@@ -8,14 +8,25 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const port = process.env.PORT || 8080;
 
-// Serve static files from dist folder
-app.use(express.static(path.join(__dirname, 'dist')));
+const distPath = path.join(__dirname, 'dist');
 
-// Handle SPA routing - send all requests to index.html
+// Serve static files from dist folder with explicit configuration
+app.use(express.static(distPath, {
+  index: 'index.html',
+  extensions: ['html']
+}));
+
+// Handle SPA routing - send all requests to dist/index.html
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+  res.sendFile(path.join(distPath, 'index.html'), (err) => {
+    if (err) {
+      console.error('Error sending file:', err);
+      res.status(500).send('Error loading application');
+    }
+  });
 });
 
 app.listen(port, '0.0.0.0', () => {
   console.log(`Server is running on port ${port}`);
+  console.log(`Serving files from: ${distPath}`);
 });
