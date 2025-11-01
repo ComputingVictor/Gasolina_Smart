@@ -5,7 +5,7 @@ import path from "path";
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
   // Si estás en Railway, usa base: '/', si es GitHub Pages, usa '/Gasolina_Smart/'
-  base: process.env.RAILWAY_ENVIRONMENT ? '/' : '/Gasolina_Smart/',
+  base: '/',
   server: {
     host: "::",
     port: 8080,
