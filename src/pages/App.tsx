@@ -249,7 +249,8 @@ const App = () => {
       const processed = processStations(allStations, userLocation);
       setStations(processed);
     }
-  }, [fuelType, radius, brandFilter, scheduleFilter, sortBy]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fuelType, radius, brandFilter, scheduleFilter, sortBy, userLocation, allStations]);
 
   return (
     <div className="min-h-screen">

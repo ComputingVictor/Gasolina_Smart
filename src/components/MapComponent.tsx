@@ -33,25 +33,54 @@ export const MapComponent = ({ stations, center, zoom = 13, radius = 10 }: MapCo
   const userLocationMarkerRef = useRef<L.Marker | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // Initialize map once
   useEffect(() => {
-    if (!containerRef.current) return;
+    if (!containerRef.current || mapRef.current) return;
 
-    // Initialize map if it doesn't exist
-    if (!mapRef.current) {
-      mapRef.current = L.map(containerRef.current).setView(center, zoom);
+    mapRef.current = L.map(containerRef.current).setView(center, zoom);
 
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-        maxZoom: 19,
-      }).addTo(mapRef.current);
-    }
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      maxZoom: 19,
+    }).addTo(mapRef.current);
+  }, []);
 
-    // Update view
+  // Update map view when center or zoom changes
+  useEffect(() => {
+    if (!mapRef.current) return;
     mapRef.current.setView(center, zoom);
+  }, [center, zoom]);
+
+  // Update markers and overlays when data changes
+  useEffect(() => {
+    if (!mapRef.current) return;
+
+    // Clear existing markers
+    markersRef.current.forEach((marker) => {
+      try {
+        marker.remove();
+      } catch (e) {
+        // Ignore errors if marker already removed
+      }
+    });
+    markersRef.current = [];
 
     // Clear existing circle
     if (circleRef.current) {
-      circleRef.current.remove();
+      try {
+        circleRef.current.remove();
+      } catch (e) {
+        // Ignore errors if circle already removed
+      }
+    }
+
+    // Clear existing user location marker
+    if (userLocationMarkerRef.current) {
+      try {
+        userLocationMarkerRef.current.remove();
+      } catch (e) {
+        // Ignore errors if marker already removed
+      }
     }
 
     // Add radius circle (radar effect)
@@ -63,11 +92,6 @@ export const MapComponent = ({ stations, center, zoom = 13, radius = 10 }: MapCo
       opacity: 0.3,
       weight: 2,
     }).addTo(mapRef.current);
-
-    // Clear existing user location marker
-    if (userLocationMarkerRef.current) {
-      userLocationMarkerRef.current.remove();
-    }
 
     // Create custom icon for user location
     const userIcon = L.divIcon({
@@ -95,11 +119,7 @@ export const MapComponent = ({ stations, center, zoom = 13, radius = 10 }: MapCo
         </div>
       `);
 
-    // Clear existing markers
-    markersRef.current.forEach((marker) => marker.remove());
-    markersRef.current = [];
-
-    // Add new markers
+    // Add new station markers
     stations.forEach((station) => {
       if (mapRef.current) {
         const marker = L.marker([station.lat, station.lng])
@@ -116,21 +136,7 @@ export const MapComponent = ({ stations, center, zoom = 13, radius = 10 }: MapCo
         markersRef.current.push(marker);
       }
     });
-
-    // Cleanup
-    return () => {
-      if (mapRef.current) {
-        markersRef.current.forEach((marker) => marker.remove());
-        markersRef.current = [];
-        if (circleRef.current) {
-          circleRef.current.remove();
-        }
-        if (userLocationMarkerRef.current) {
-          userLocationMarkerRef.current.remove();
-        }
-      }
-    };
-  }, [stations, center, zoom, radius]);
+  }, [stations, center, radius]);
 
   // Cleanup on unmount
   useEffect(() => {
