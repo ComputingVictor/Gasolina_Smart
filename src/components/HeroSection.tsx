@@ -1,14 +1,15 @@
 import { motion } from "framer-motion";
-import { MapPin, TrendingDown, Zap, TrendingUp } from "lucide-react";
+import { MapPin, TrendingDown, Zap, TrendingUp, Gift } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import heroBackground from "@/assets/hero-bg.jpg";
 
 interface HeroSectionProps {
   onGetStarted: () => void;
   onViewHistory: () => void;
+  onViewPromotions: () => void;
 }
 
-export const HeroSection = ({ onGetStarted, onViewHistory }: HeroSectionProps) => {
+export const HeroSection = ({ onGetStarted, onViewHistory, onViewPromotions }: HeroSectionProps) => {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background with overlay */}
@@ -69,10 +70,19 @@ export const HeroSection = ({ onGetStarted, onViewHistory }: HeroSectionProps) =
               size="lg"
               variant="outline"
               className="text-lg px-8 py-6 rounded-full glass border-white/20 hover:bg-white/10"
+              onClick={onViewPromotions}
+            >
+              <Gift className="w-5 h-5 mr-2" />
+              Ver promociones
+            </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              className="text-lg px-8 py-6 rounded-full glass border-white/20 hover:bg-white/10"
               onClick={onViewHistory}
             >
               <TrendingUp className="w-5 h-5 mr-2" />
-              Ver histórico de precios
+              Histórico
             </Button>
           </div>
         </motion.div>
