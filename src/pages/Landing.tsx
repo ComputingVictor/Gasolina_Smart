@@ -1,20 +1,28 @@
 import { useNavigate } from "react-router-dom";
+import { useRef } from "react";
 import { HeroSection } from "@/components/HeroSection";
 import { FeaturesSection } from "@/components/FeaturesSection";
 import { FuelPriceHistoryChart } from "@/components/FuelPriceHistoryChart";
 
 const Landing = () => {
   const navigate = useNavigate();
+  const chartRef = useRef<HTMLDivElement>(null);
 
   const handleGetStarted = () => {
     navigate('/app');
   };
 
+  const handleViewHistory = () => {
+    chartRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
   return (
     <div className="min-h-screen">
-      <HeroSection onGetStarted={handleGetStarted} />
+      <HeroSection onGetStarted={handleGetStarted} onViewHistory={handleViewHistory} />
       <FeaturesSection />
-      <FuelPriceHistoryChart />
+      <div ref={chartRef}>
+        <FuelPriceHistoryChart />
+      </div>
 
       <footer className="py-12 text-center text-muted-foreground border-t border-white/10">
         <div className="container mx-auto px-4">
