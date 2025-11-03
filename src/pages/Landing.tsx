@@ -3,12 +3,10 @@ import { useRef } from "react";
 import { HeroSection } from "@/components/HeroSection";
 import { FeaturesSection } from "@/components/FeaturesSection";
 import { FuelPriceHistoryChart } from "@/components/FuelPriceHistoryChart";
-import { PromotionsSection } from "@/components/PromotionsSection";
 
 const Landing = () => {
   const navigate = useNavigate();
   const chartRef = useRef<HTMLDivElement>(null);
-  const promotionsRef = useRef<HTMLDivElement>(null);
 
   const handleGetStarted = () => {
     navigate('/app');
@@ -19,7 +17,7 @@ const Landing = () => {
   };
 
   const handleViewPromotions = () => {
-    promotionsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    navigate('/promociones');
   };
 
   return (
@@ -30,9 +28,6 @@ const Landing = () => {
         onViewPromotions={handleViewPromotions}
       />
       <FeaturesSection />
-      <div ref={promotionsRef}>
-        <PromotionsSection />
-      </div>
       <div ref={chartRef}>
         <FuelPriceHistoryChart />
       </div>
