@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { HeroSection } from "@/components/HeroSection";
 import { FeaturesSection } from "@/components/FeaturesSection";
+import { FuelPriceHistoryChart } from "@/components/FuelPriceHistoryChart";
 
 const Landing = () => {
   const navigate = useNavigate();
@@ -13,7 +14,8 @@ const Landing = () => {
     <div className="min-h-screen">
       <HeroSection onGetStarted={handleGetStarted} />
       <FeaturesSection />
-      
+      <FuelPriceHistoryChart />
+
       <footer className="py-12 text-center text-muted-foreground border-t border-white/10">
         <div className="container mx-auto px-4">
           <p className="mb-2">Datos oficiales del Ministerio de Industria y Turismo</p>
