@@ -42,6 +42,10 @@ const generateHistoricalData = () => {
     { month: "Jun 2025", gasolina95: 1.444, gasolina98: 1.623, gasoleoA: 1.362, gasoleoB: 1.292 },
     { month: "Jul 2025", gasolina95: 1.456, gasolina98: 1.637, gasoleoA: 1.401, gasoleoB: 1.331 },
     { month: "Ago 2025", gasolina95: 1.449, gasolina98: 1.636, gasoleoA: 1.391, gasoleoB: 1.321 },
+    { month: "Sep 2025", gasolina95: 1.442, gasolina98: 1.628, gasoleoA: 1.385, gasoleoB: 1.315 },
+    { month: "Oct 2025", gasolina95: 1.455, gasolina98: 1.639, gasoleoA: 1.398, gasoleoB: 1.328 },
+    { month: "Nov 2025", gasolina95: 1.468, gasolina98: 1.651, gasoleoA: 1.412, gasoleoB: 1.342 },
+    { month: "Dic 2025", gasolina95: 1.476, gasolina98: 1.658, gasoleoA: 1.421, gasoleoB: 1.351 },
   ];
 
   return months;
@@ -79,7 +83,7 @@ export const FuelPriceHistoryChart = () => {
       "6m": 6,
       "1y": 12,
       "2y": 24,
-      "3y": 32, // Total de meses desde Ene 2023 hasta Ago 2025
+      "3y": 36, // Total de meses desde Ene 2023 hasta Dic 2025
     };
 
     const months = ranges[timeRange];
