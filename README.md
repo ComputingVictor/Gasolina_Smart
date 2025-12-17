@@ -24,6 +24,8 @@ GasolinaSmart es una herramienta que permite a los usuarios localizar las estaci
 - **Filtros avanzados**: Por marca, horario, radio de búsqueda y más
 - **Visualización en mapa**: Mapa interactivo con todas las estaciones cercanas
 - **Navegación integrada**: Abre la ruta directamente en Google Maps
+- **Gráfico histórico de precios**: Visualiza la evolución de precios desde 2023 hasta la actualidad
+- **Sección de promociones**: Encuentra ofertas y descuentos en gasolineras
 
 ## Objetivo
 
@@ -37,6 +39,8 @@ El objetivo de GasolinaSmart es democratizar el acceso a información de precios
 - Filtrado por tipo de combustible
 - Radio de búsqueda personalizable (2.5-30 km)
 - **Calculadora de ahorro inteligente**: Calcula si vale la pena ir a una gasolinera más lejana considerando el coste del desplazamiento
+- **Análisis histórico de precios**: Gráficos interactivos con evolución de precios desde 2023 hasta diciembre 2025
+- **Sistema de promociones**: Visualización de ofertas especiales y descuentos
 - Filtrado automático de estaciones de autobuses
 - Filtros por marca de estación
 - Filtro para gasolineras 24 horas
@@ -52,12 +56,14 @@ El objetivo de GasolinaSmart es democratizar el acceso a información de precios
 - **Build Tool**: Vite
 - **Estilos**: Tailwind CSS
 - **Componentes UI**: shadcn/ui + Radix UI
-- **Mapas**: Leaflet + React-Leaflet
-- **Routing**: React Router DOM
-- **Gestión de Estado**: React Query
-- **Formularios**: React Hook Form + Zod
-- **Notificaciones**: Sonner
-- **Animaciones**: Framer Motion
+- **Mapas**: Leaflet 1.9.4 + React-Leaflet
+- **Routing**: React Router DOM 6.30.1
+- **Gestión de Estado**: TanStack Query 5.83.0
+- **Formularios**: React Hook Form 7.61.1 + Zod 3.25.76
+- **Gráficos**: Recharts 2.15.4
+- **Notificaciones**: Sonner 1.7.4
+- **Animaciones**: Framer Motion 11.18.2
+- **Iconos**: Lucide React 0.462.0
 
 
 ## Fuente de Datos
@@ -70,16 +76,31 @@ Los datos de precios de combustible se obtienen en tiempo real de la API oficial
 ```
 src/
 ├── components/        # Componentes React
-│   ├── ui/           # Componentes de interfaz reutilizables
+│   ├── ui/           # Componentes de interfaz reutilizables (shadcn/ui)
 │   ├── HeroSection.tsx
 │   ├── FeaturesSection.tsx
 │   ├── SearchSection.tsx
 │   ├── FilterControls.tsx
 │   ├── MapComponent.tsx
 │   ├── StationsList.tsx
-│   └── StationCard.tsx
+│   ├── StationCard.tsx
+│   ├── FuelPriceHistoryChart.tsx  # Gráfico histórico de precios
+│   ├── PromotionsSection.tsx      # Sección de promociones
+│   ├── SavingsCalculator.tsx      # Calculadora de ahorro
+│   └── ErrorBoundary.tsx          # Manejo de errores
 ├── pages/            # Páginas de la aplicación
+│   ├── App.tsx       # Página principal
+│   ├── Landing.tsx   # Página de inicio
+│   ├── Promotions.tsx # Página de promociones
+│   └── NotFound.tsx   # Página 404
 ├── hooks/            # Custom React hooks
+│   ├── use-debounce.ts
+│   ├── use-mobile.tsx
+│   └── use-toast.ts
+├── lib/              # Utilidades y configuración
+│   ├── utils.ts
+│   ├── brandLogos.ts
+│   └── fetch-with-retry.ts
 └── main.tsx          # Punto de entrada
 ```
 
