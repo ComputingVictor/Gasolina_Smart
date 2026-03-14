@@ -22,4 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-RAILWAY_DEPLOY.md
+
+# Environment variables
+.env
+.env.local
+.env.production
