@@ -7,7 +7,14 @@ import { readFileSync } from 'fs';
 import dotenv from 'dotenv';
 
 import pool from './db/index.js';
-import { fetchAndStoreDailyPrices, getPriceHistory } from './services/fuelPriceService.js';
+import {
+  fetchAndStoreDailyPrices,
+  getPriceHistory,
+  getStationHistoryFiltered,
+  getFilterOptions,
+  getCitiesByProvince,
+  getStationsByCity
+} from './services/fuelPriceService.js';
 
 dotenv.config();
 
@@ -189,6 +196,79 @@ app.get('/api/health', async (req, res) => {
         error: error.message
       }
     });
+  }
+});
+
+// Obtener historial filtrado de gasolineras
+app.get('/api/fuel-prices/station-history', async (req, res) => {
+  try {
+    const {
+      fuelType,
+      province,
+      city,
+      brand,
+      stationId,
+      days
+    } = req.query;
+
+    const data = await getStationHistoryFiltered({
+      fuelType,
+      province,
+      city,
+      brand,
+      stationId,
+      days: days ? parseInt(days) : 365
+    });
+
+    // Convertir DECIMAL a números
+    const formatted = data.map(record => ({
+      ...record,
+      price: record.price ? parseFloat(record.price) : null,
+      avg_price: record.avg_price ? parseFloat(record.avg_price) : null,
+      min_price: record.min_price ? parseFloat(record.min_price) : null,
+      max_price: record.max_price ? parseFloat(record.max_price) : null,
+    }));
+
+    res.json(formatted);
+  } catch (error) {
+    console.error('Error en /api/fuel-prices/station-history:', error);
+    res.status(500).json({ error: 'Error al obtener historial de estaciones' });
+  }
+});
+
+// Obtener opciones de filtros (provincias y marcas)
+app.get('/api/fuel-prices/filter-options', async (req, res) => {
+  try {
+    const options = await getFilterOptions();
+    res.json(options);
+  } catch (error) {
+    console.error('Error en /api/fuel-prices/filter-options:', error);
+    res.status(500).json({ error: 'Error al obtener opciones de filtros' });
+  }
+});
+
+// Obtener ciudades por provincia
+app.get('/api/fuel-prices/cities/:province', async (req, res) => {
+  try {
+    const { province } = req.params;
+    const cities = await getCitiesByProvince(decodeURIComponent(province));
+    res.json(cities);
+  } catch (error) {
+    console.error('Error en /api/fuel-prices/cities:', error);
+    res.status(500).json({ error: 'Error al obtener ciudades' });
+  }
+});
+
+// Obtener gasolineras por ciudad
+app.get('/api/fuel-prices/stations/:city', async (req, res) => {
+  try {
+    const { city } = req.params;
+    const { brand } = req.query;
+    const stations = await getStationsByCity(decodeURIComponent(city), brand);
+    res.json(stations);
+  } catch (error) {
+    console.error('Error en /api/fuel-prices/stations:', error);
+    res.status(500).json({ error: 'Error al obtener estaciones' });
   }
 });
 

@@ -27,6 +27,78 @@ const calculateStats = (prices) => {
   return { avg, min, max };
 };
 
+const storeStationHistoricalData = async (stations) => {
+  const today = new Date().toISOString().split('T')[0];
+
+  const values = [];
+  const placeholders = [];
+  let paramIndex = 1;
+
+  for (const station of stations) {
+    const brand = (station.Rótulo || '').trim();
+    const province = station.Provincia || '';
+    const city = station.Municipio || station.Localidad || '';
+    const address = station.Dirección || '';
+    const lat = station.Latitud ? parseFloat(station.Latitud.replace(',', '.')) : null;
+    const lng = station['Longitud (WGS84)'] ? parseFloat(station['Longitud (WGS84)'].replace(',', '.')) : null;
+    const schedule = station.Horario || '';
+
+    const gasolina95 = parsePrice(station['Precio Gasolina 95 E5']);
+    const gasolina98 = parsePrice(station['Precio Gasolina 98 E5']);
+    const gasoleoa = parsePrice(station['Precio Gasoleo A']);
+    const gasoleob = parsePrice(station['Precio Gasoleo B']);
+    const gasoleoplus = parsePrice(station['Precio Gasoleo Premium']);
+
+    // Solo guardar si tiene al menos un precio válido
+    if (!gasolina95 && !gasolina98 && !gasoleoa && !gasoleob && !gasoleoplus) {
+      continue;
+    }
+
+    placeholders.push(
+      `($${paramIndex}, $${paramIndex+1}, $${paramIndex+2}, $${paramIndex+3}, ` +
+      `$${paramIndex+4}, $${paramIndex+5}, $${paramIndex+6}, $${paramIndex+7}, ` +
+      `$${paramIndex+8}, $${paramIndex+9}, $${paramIndex+10}, $${paramIndex+11}, ` +
+      `$${paramIndex+12}, $${paramIndex+13}, $${paramIndex+14})`
+    );
+
+    values.push(
+      station.IDEESS, today, station.Rótulo || 'Sin nombre',
+      province, city, address, brand, lat, lng, schedule,
+      gasolina95, gasolina98, gasoleoa, gasoleob, gasoleoplus
+    );
+
+    paramIndex += 15;
+  }
+
+  if (values.length === 0) {
+    console.log('⚠️  No hay datos de estaciones para guardar');
+    return 0;
+  }
+
+  const query = `
+    INSERT INTO fuel_price_history_by_station (
+      station_id, date, station_name, province, city, address, brand,
+      latitude, longitude, schedule,
+      gasolina95_price, gasolina98_price, gasoleoa_price,
+      gasoleob_price, gasoleoplus_price
+    )
+    VALUES ${placeholders.join(', ')}
+    ON CONFLICT (station_id, date)
+    DO UPDATE SET
+      station_name = EXCLUDED.station_name,
+      gasolina95_price = EXCLUDED.gasolina95_price,
+      gasolina98_price = EXCLUDED.gasolina98_price,
+      gasoleoa_price = EXCLUDED.gasoleoa_price,
+      gasoleob_price = EXCLUDED.gasoleob_price,
+      gasoleoplus_price = EXCLUDED.gasoleoplus_price
+  `;
+
+  await pool.query(query, values);
+  console.log(`✅ ${values.length / 15} registros de estaciones guardados`);
+
+  return values.length / 15;
+};
+
 const fetchAndStoreDailyPrices = async () => {
   try {
     console.log('📊 Iniciando obtención de precios diarios...');
@@ -112,6 +184,9 @@ const fetchAndStoreDailyPrices = async () => {
     const result = await pool.query(query, values);
     console.log('✅ Precios diarios guardados:', result.rows[0]);
 
+    // Guardar datos individuales de cada gasolinera
+    await storeStationHistoricalData(stations);
+
     return result.rows[0];
   } catch (error) {
     console.error('❌ Error al obtener y guardar precios:', error);
@@ -135,4 +210,150 @@ const getPriceHistory = async (days = 30) => {
   }
 };
 
-export { fetchAndStoreDailyPrices, getPriceHistory };
+const getStationHistoryFiltered = async (filters) => {
+  const {
+    fuelType = 'gasolina95',
+    province,
+    city,
+    brand,
+    stationId,
+    days = 365
+  } = filters;
+
+  const conditions = [];
+  const params = [];
+  let paramIndex = 1;
+
+  if (province && province !== 'all') {
+    conditions.push(`province = $${paramIndex++}`);
+    params.push(province);
+  }
+
+  if (city && city !== 'all') {
+    conditions.push(`city = $${paramIndex++}`);
+    params.push(city);
+  }
+
+  if (brand && brand !== 'all') {
+    conditions.push(`LOWER(brand) LIKE $${paramIndex++}`);
+    params.push(`%${brand.toLowerCase()}%`);
+  }
+
+  if (stationId && stationId !== 'all') {
+    conditions.push(`station_id = $${paramIndex++}`);
+    params.push(stationId);
+  }
+
+  const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
+  const fuelColumn = `${fuelType}_price`;
+
+  // Si es gasolinera específica, devolver datos individuales
+  if (stationId && stationId !== 'all') {
+    const query = `
+      SELECT
+        date,
+        station_name,
+        city,
+        brand,
+        ${fuelColumn} as price
+      FROM fuel_price_history_by_station
+      ${whereClause}
+      ORDER BY date DESC
+      LIMIT $${paramIndex}
+    `;
+    params.push(days);
+
+    const result = await pool.query(query, params);
+    return result.rows.reverse();
+  }
+
+  // De lo contrario, agregar por fecha
+  const query = `
+    SELECT
+      date,
+      AVG(${fuelColumn}) as avg_price,
+      MIN(${fuelColumn}) as min_price,
+      MAX(${fuelColumn}) as max_price,
+      COUNT(*) as station_count
+    FROM fuel_price_history_by_station
+    ${whereClause}
+    GROUP BY date
+    ORDER BY date DESC
+    LIMIT $${paramIndex}
+  `;
+  params.push(days);
+
+  const result = await pool.query(query, params);
+  return result.rows.reverse();
+};
+
+const getFilterOptions = async () => {
+  const provinceQuery = `
+    SELECT DISTINCT province
+    FROM fuel_price_history_by_station
+    WHERE province IS NOT NULL AND province != ''
+    ORDER BY province
+  `;
+
+  const brandQuery = `
+    SELECT DISTINCT brand
+    FROM fuel_price_history_by_station
+    WHERE brand IS NOT NULL AND brand != ''
+    ORDER BY brand
+  `;
+
+  const [provinces, brands] = await Promise.all([
+    pool.query(provinceQuery),
+    pool.query(brandQuery)
+  ]);
+
+  return {
+    provinces: provinces.rows.map(r => r.province),
+    brands: brands.rows.map(r => r.brand)
+  };
+};
+
+const getCitiesByProvince = async (province) => {
+  const query = `
+    SELECT DISTINCT city
+    FROM fuel_price_history_by_station
+    WHERE province = $1 AND city IS NOT NULL AND city != ''
+    ORDER BY city
+  `;
+
+  const result = await pool.query(query, [province]);
+  return result.rows.map(r => r.city);
+};
+
+const getStationsByCity = async (city, brand = null) => {
+  let query = `
+    SELECT DISTINCT
+      station_id,
+      station_name,
+      brand,
+      address
+    FROM fuel_price_history_by_station
+    WHERE city = $1
+  `;
+
+  const params = [city];
+
+  if (brand && brand !== 'all') {
+    query += ` AND LOWER(brand) LIKE $2`;
+    params.push(`%${brand.toLowerCase()}%`);
+  }
+
+  query += ` ORDER BY station_name LIMIT 500`;
+
+  const result = await pool.query(query, params);
+  return result.rows;
+};
+
+export {
+  fetchAndStoreDailyPrices,
+  getPriceHistory,
+  getStationHistoryFiltered,
+  getFilterOptions,
+  getCitiesByProvince,
+  getStationsByCity
+};
