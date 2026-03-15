@@ -1,2 +1,2 @@
 // Railway compatibility - redirect to actual server
-import('./server/index.js');
+await import('./server/index.js');
