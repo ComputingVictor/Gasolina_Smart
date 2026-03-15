@@ -144,8 +144,31 @@ app.post('/api/fuel-prices/update', async (req, res) => {
   }
 });
 
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+app.get('/api/health', async (req, res) => {
+  try {
+    // Test database connection
+    const result = await pool.query('SELECT NOW()');
+    const count = await pool.query('SELECT COUNT(*) FROM fuel_price_history');
+
+    res.json({
+      status: 'ok',
+      timestamp: new Date().toISOString(),
+      database: {
+        connected: true,
+        serverTime: result.rows[0].now,
+        recordsInDB: parseInt(count.rows[0].count)
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      timestamp: new Date().toISOString(),
+      database: {
+        connected: false,
+        error: error.message
+      }
+    });
+  }
 });
 
 // Serve React app for all other routes
