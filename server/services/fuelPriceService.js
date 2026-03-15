@@ -29,87 +29,96 @@ const calculateStats = (prices) => {
 
 const storeStationHistoricalData = async (stations) => {
   const today = new Date().toISOString().split('T')[0];
+  const BATCH_SIZE = 500; // Insertar en lotes de 500 para evitar límites de PostgreSQL
+  let totalInserted = 0;
 
-  const values = [];
-  const placeholders = [];
-  let paramIndex = 1;
+  console.log(`📝 Iniciando inserción de ${stations.length} estaciones en lotes de ${BATCH_SIZE}`);
 
-  for (const station of stations) {
-    const brand = (station.Rótulo || '').trim();
-    const province = station.Provincia || '';
-    const city = station.Municipio || station.Localidad || '';
-    const address = station.Dirección || '';
-    const lat = station.Latitud ? parseFloat(station.Latitud.replace(',', '.')) : null;
-    const lng = station['Longitud (WGS84)'] ? parseFloat(station['Longitud (WGS84)'].replace(',', '.')) : null;
-    const schedule = station.Horario || '';
+  // Dividir en lotes
+  for (let i = 0; i < stations.length; i += BATCH_SIZE) {
+    const batch = stations.slice(i, i + BATCH_SIZE);
+    const values = [];
+    const placeholders = [];
+    let paramIndex = 1;
 
-    const gasolina95 = parsePrice(station['Precio Gasolina 95 E5']);
-    const gasolina98 = parsePrice(station['Precio Gasolina 98 E5']);
-    const gasoleoa = parsePrice(station['Precio Gasoleo A']);
-    const gasoleob = parsePrice(station['Precio Gasoleo B']);
-    const gasoleoplus = parsePrice(station['Precio Gasoleo Premium']);
+    for (const station of batch) {
+      const brand = (station.Rótulo || '').trim();
+      const province = station.Provincia || '';
+      const city = station.Municipio || station.Localidad || '';
+      const address = station.Dirección || '';
+      const lat = station.Latitud ? parseFloat(station.Latitud.replace(',', '.')) : null;
+      const lng = station['Longitud (WGS84)'] ? parseFloat(station['Longitud (WGS84)'].replace(',', '.')) : null;
+      const schedule = station.Horario || '';
 
-    // Solo guardar si tiene al menos un precio válido
-    if (!gasolina95 && !gasolina98 && !gasoleoa && !gasoleob && !gasoleoplus) {
+      const gasolina95 = parsePrice(station['Precio Gasolina 95 E5']);
+      const gasolina98 = parsePrice(station['Precio Gasolina 98 E5']);
+      const gasoleoa = parsePrice(station['Precio Gasoleo A']);
+      const gasoleob = parsePrice(station['Precio Gasoleo B']);
+      const gasoleoplus = parsePrice(station['Precio Gasoleo Premium']);
+
+      // Solo guardar si tiene al menos un precio válido
+      if (!gasolina95 && !gasolina98 && !gasoleoa && !gasoleob && !gasoleoplus) {
+        continue;
+      }
+
+      placeholders.push(
+        `($${paramIndex}, $${paramIndex+1}, $${paramIndex+2}, $${paramIndex+3}, ` +
+        `$${paramIndex+4}, $${paramIndex+5}, $${paramIndex+6}, $${paramIndex+7}, ` +
+        `$${paramIndex+8}, $${paramIndex+9}, $${paramIndex+10}, $${paramIndex+11}, ` +
+        `$${paramIndex+12}, $${paramIndex+13}, $${paramIndex+14})`
+      );
+
+      values.push(
+        station.IDEESS, today, station.Rótulo || 'Sin nombre',
+        province, city, address, brand, lat, lng, schedule,
+        gasolina95, gasolina98, gasoleoa, gasoleob, gasoleoplus
+      );
+
+      paramIndex += 15;
+    }
+
+    if (values.length === 0) {
       continue;
     }
 
-    placeholders.push(
-      `($${paramIndex}, $${paramIndex+1}, $${paramIndex+2}, $${paramIndex+3}, ` +
-      `$${paramIndex+4}, $${paramIndex+5}, $${paramIndex+6}, $${paramIndex+7}, ` +
-      `$${paramIndex+8}, $${paramIndex+9}, $${paramIndex+10}, $${paramIndex+11}, ` +
-      `$${paramIndex+12}, $${paramIndex+13}, $${paramIndex+14})`
-    );
+    const query = `
+      INSERT INTO fuel_price_history_by_station (
+        station_id, date, station_name, province, city, address, brand,
+        latitude, longitude, schedule,
+        gasolina95_price, gasolina98_price, gasoleoa_price,
+        gasoleob_price, gasoleoplus_price
+      )
+      VALUES ${placeholders.join(', ')}
+      ON CONFLICT (station_id, date)
+      DO UPDATE SET
+        station_name = EXCLUDED.station_name,
+        gasolina95_price = EXCLUDED.gasolina95_price,
+        gasolina98_price = EXCLUDED.gasolina98_price,
+        gasoleoa_price = EXCLUDED.gasoleoa_price,
+        gasoleob_price = EXCLUDED.gasoleob_price,
+        gasoleoplus_price = EXCLUDED.gasoleoplus_price
+    `;
 
-    values.push(
-      station.IDEESS, today, station.Rótulo || 'Sin nombre',
-      province, city, address, brand, lat, lng, schedule,
-      gasolina95, gasolina98, gasoleoa, gasoleob, gasoleoplus
-    );
-
-    paramIndex += 15;
+    try {
+      await pool.query(query, values);
+      const batchCount = values.length / 15;
+      totalInserted += batchCount;
+      console.log(`✅ Lote ${Math.floor(i / BATCH_SIZE) + 1}: ${batchCount} estaciones guardadas (Total: ${totalInserted})`);
+    } catch (error) {
+      console.error(`❌ Error al insertar lote ${Math.floor(i / BATCH_SIZE) + 1}:`, error.message);
+      console.error('Primer registro del lote:', {
+        station_id: values[0],
+        date: values[1],
+        station_name: values[2],
+        province: values[3],
+        city: values[4]
+      });
+      throw error;
+    }
   }
 
-  if (values.length === 0) {
-    console.log('⚠️  No hay datos de estaciones para guardar');
-    return 0;
-  }
-
-  console.log(`📝 Preparando inserción de ${values.length / 15} estaciones`);
-
-  const query = `
-    INSERT INTO fuel_price_history_by_station (
-      station_id, date, station_name, province, city, address, brand,
-      latitude, longitude, schedule,
-      gasolina95_price, gasolina98_price, gasoleoa_price,
-      gasoleob_price, gasoleoplus_price
-    )
-    VALUES ${placeholders.join(', ')}
-    ON CONFLICT (station_id, date)
-    DO UPDATE SET
-      station_name = EXCLUDED.station_name,
-      gasolina95_price = EXCLUDED.gasolina95_price,
-      gasolina98_price = EXCLUDED.gasolina98_price,
-      gasoleoa_price = EXCLUDED.gasoleoa_price,
-      gasoleob_price = EXCLUDED.gasoleob_price,
-      gasoleoplus_price = EXCLUDED.gasoleoplus_price
-  `;
-
-  try {
-    await pool.query(query, values);
-    console.log(`✅ ${values.length / 15} registros de estaciones guardados`);
-    return values.length / 15;
-  } catch (error) {
-    console.error('❌ Error al insertar datos de estaciones:', error.message);
-    console.error('Primer registro de muestra:', {
-      station_id: values[0],
-      date: values[1],
-      station_name: values[2],
-      province: values[3],
-      city: values[4]
-    });
-    throw error;
-  }
+  console.log(`✅ Total de estaciones guardadas: ${totalInserted}`);
+  return totalInserted;
 };
 
 const fetchAndStoreDailyPrices = async () => {
