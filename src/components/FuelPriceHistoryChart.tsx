@@ -58,6 +58,7 @@ export const FuelPriceHistoryChart = () => {
         };
 
         const days = ranges[timeRange];
+        console.log(`🔍 Cargando historial de precios: ${days} días (${timeRange})`);
         const response = await fetch(`/api/fuel-prices/history?days=${days}`);
 
         if (!response.ok) {
@@ -65,6 +66,7 @@ export const FuelPriceHistoryChart = () => {
         }
 
         const data: FuelPriceData[] = await response.json();
+        console.log(`✅ Recibidos ${data.length} registros de precio`);
 
         const formattedData: ChartDataPoint[] = data.map((item) => {
           const date = new Date(item.date);
@@ -248,7 +250,13 @@ export const FuelPriceHistoryChart = () => {
               )}
             </div>
 
-            <div className="mt-6 text-sm text-muted-foreground text-center">
+            <div className="mt-6 text-sm text-muted-foreground text-center space-y-2">
+              {filteredData.length > 0 && (
+                <p className="font-medium text-primary">
+                  Mostrando {filteredData.length} registros
+                  {filteredData.length > 0 && ` (${filteredData[0].month} - ${filteredData[filteredData.length - 1].month})`}
+                </p>
+              )}
               <p>Datos oficiales actualizados diariamente</p>
               <p className="text-xs mt-1">Fuente: Ministerio de Industria y Turismo</p>
             </div>
