@@ -42,12 +42,12 @@ export const HeroSection = ({ onGetStarted, onViewHistory, onViewPromotions, onV
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="mb-6"
+            className="mb-8"
           >
             <img
               src={logo}
               alt="GasolinaSmart Logo"
-              className="w-32 h-32 md:w-40 md:h-40 mx-auto drop-shadow-2xl"
+              className="w-48 h-48 md:w-64 md:h-64 lg:w-72 lg:h-72 mx-auto drop-shadow-2xl"
             />
           </motion.div>
 
