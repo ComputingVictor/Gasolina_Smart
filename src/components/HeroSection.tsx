@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { MapPin, TrendingDown, Zap, TrendingUp, Gift } from "lucide-react";
+import { MapPin, TrendingDown, Zap, TrendingUp, Gift, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import heroBackground from "@/assets/hero-bg.jpg";
 
@@ -7,9 +7,10 @@ interface HeroSectionProps {
   onGetStarted: () => void;
   onViewHistory: () => void;
   onViewPromotions: () => void;
+  onViewAdvancedAnalysis: () => void;
 }
 
-export const HeroSection = ({ onGetStarted, onViewHistory, onViewPromotions }: HeroSectionProps) => {
+export const HeroSection = ({ onGetStarted, onViewHistory, onViewPromotions, onViewAdvancedAnalysis }: HeroSectionProps) => {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background with overlay */}
@@ -57,7 +58,7 @@ export const HeroSection = ({ onGetStarted, onViewHistory, onViewPromotions }: H
             Ahorra en cada repostaje con nuestra tecnología inteligente.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center flex-wrap">
             <Button
               size="lg"
               className="text-lg px-8 py-6 rounded-full bg-primary hover:bg-primary/90 shadow-[0_0_40px_hsl(263_70%_60%_/_0.6)] hover:shadow-[0_0_60px_hsl(263_70%_60%_/_0.8)] transition-all duration-300"
@@ -65,6 +66,15 @@ export const HeroSection = ({ onGetStarted, onViewHistory, onViewPromotions }: H
             >
               <MapPin className="w-5 h-5 mr-2" />
               Buscar cerca de mí
+            </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              className="text-lg px-8 py-6 rounded-full glass border-white/20 hover:bg-white/10"
+              onClick={onViewAdvancedAnalysis}
+            >
+              <BarChart3 className="w-5 h-5 mr-2" />
+              Análisis Avanzado
             </Button>
             <Button
               size="lg"

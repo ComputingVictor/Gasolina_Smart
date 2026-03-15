@@ -20,12 +20,17 @@ const Landing = () => {
     navigate('/promociones');
   };
 
+  const handleViewAdvancedAnalysis = () => {
+    navigate('/analisis');
+  };
+
   return (
     <div className="min-h-screen">
       <HeroSection
         onGetStarted={handleGetStarted}
         onViewHistory={handleViewHistory}
         onViewPromotions={handleViewPromotions}
+        onViewAdvancedAnalysis={handleViewAdvancedAnalysis}
       />
       <FeaturesSection />
       <div ref={chartRef}>
