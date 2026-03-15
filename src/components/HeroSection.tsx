@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { MapPin, TrendingDown, Zap, TrendingUp, Gift, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import heroBackground from "@/assets/hero-bg.jpg";
+import logo from "@/assets/logo.svg";
 
 interface HeroSectionProps {
   onGetStarted: () => void;
@@ -36,6 +37,20 @@ export const HeroSection = ({ onGetStarted, onViewHistory, onViewPromotions, onV
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
+          {/* Logo */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="mb-6"
+          >
+            <img
+              src={logo}
+              alt="GasolinaSmart Logo"
+              className="w-32 h-32 md:w-40 md:h-40 mx-auto drop-shadow-2xl"
+            />
+          </motion.div>
+
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}

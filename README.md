@@ -1,18 +1,21 @@
-# GasolinaSmart
+<div align="center">
+  <img src="./src/assets/logo.svg" alt="GasolinaSmart Logo" width="200"/>
 
-[![Deploy to GitHub Pages](https://github.com/ComputingVictor/Gasolina_Smart/actions/workflows/deploy.yml/badge.svg)](https://github.com/ComputingVictor/Gasolina_Smart/actions/workflows/deploy.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![React](https://img.shields.io/badge/React-18.3.1-blue.svg)](https://reactjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.8.3-blue.svg)](https://www.typescriptlang.org/)
-[![Vite](https://img.shields.io/badge/Vite-5.4.19-646CFF.svg)](https://vitejs.dev/)
+  # GasolinaSmart
 
-🚀 **[Ver Aplicación en Vivo](https://computingvictor.github.io/Gasolina_Smart/)** 🚀
+  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+  [![React](https://img.shields.io/badge/React-18.3.1-blue.svg)](https://reactjs.org/)
+  [![TypeScript](https://img.shields.io/badge/TypeScript-5.8.3-blue.svg)](https://www.typescriptlang.org/)
+  [![Vite](https://img.shields.io/badge/Vite-5.4.19-646CFF.svg)](https://vitejs.dev/)
+
+  🚀 **[Ver Aplicación en Vivo](https://gasolinasmart-production.up.railway.app/)** 🚀
+</div>
 
 Aplicación web para encontrar las gasolineras más baratas cerca de ti en España. Compara precios de combustible en tiempo real utilizando datos oficiales del Ministerio de Industria y Turismo.
 
 ## 📸 Demo
 
-Visita la aplicación en vivo: **[https://computingvictor.github.io/Gasolina_Smart/](https://computingvictor.github.io/Gasolina_Smart/)**
+Visita la aplicación en vivo: **[https://gasolinasmart-production.up.railway.app/](https://gasolinasmart-production.up.railway.app/)**
 
 ## Descripción del Proyecto
 
@@ -52,7 +55,8 @@ El objetivo de GasolinaSmart es democratizar el acceso a información de precios
 
 ## Tecnologías Utilizadas
 
-- **Frontend**: React 18 + TypeScript
+### Frontend
+- **Framework**: React 18 + TypeScript
 - **Build Tool**: Vite
 - **Estilos**: Tailwind CSS
 - **Componentes UI**: shadcn/ui + Radix UI
@@ -64,6 +68,14 @@ El objetivo de GasolinaSmart es democratizar el acceso a información de precios
 - **Notificaciones**: Sonner 1.7.4
 - **Animaciones**: Framer Motion 11.18.2
 - **Iconos**: Lucide React 0.462.0
+
+### Backend
+- **Runtime**: Node.js
+- **Framework**: Express.js
+- **Base de Datos**: PostgreSQL (Railway)
+- **Tareas Programadas**: node-cron
+- **API Cliente**: Fetch API
+- **CORS**: cors middleware
 
 
 ## Fuente de Datos
