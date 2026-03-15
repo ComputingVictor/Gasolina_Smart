@@ -224,14 +224,25 @@ const fetchAndStoreDailyPrices = async () => {
 
 const getPriceHistory = async (days = 30) => {
   try {
+    // Convertir días a número aproximado de registros mensuales
+    // 180 días ≈ 6 meses, 365 días ≈ 12 meses, etc.
+    const recordsMap = {
+      180: 6,   // 6 meses
+      365: 12,  // 1 año
+      730: 24,  // 2 años
+      1095: 36  // 3 años
+    };
+
+    const limit = recordsMap[days] || Math.ceil(days / 30);
+
     const query = `
       SELECT * FROM fuel_price_history
-      WHERE date >= CURRENT_DATE - INTERVAL '1 day' * $1
-      ORDER BY date ASC;
+      ORDER BY date DESC
+      LIMIT $1;
     `;
 
-    const result = await pool.query(query, [days]);
-    return result.rows; // Already in ascending order
+    const result = await pool.query(query, [limit]);
+    return result.rows.reverse(); // Return in ascending order (oldest first)
   } catch (error) {
     console.error('❌ Error al obtener historial de precios:', error);
     throw error;
