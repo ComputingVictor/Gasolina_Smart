@@ -127,7 +127,28 @@ app.get('/api/fuel-prices/history', async (req, res) => {
   try {
     const days = parseInt(req.query.days) || 30;
     const history = await getPriceHistory(days);
-    res.json(history);
+
+    // Convert DECIMAL values from strings to numbers
+    const formattedHistory = history.map(record => ({
+      ...record,
+      gasolina95_avg: record.gasolina95_avg ? parseFloat(record.gasolina95_avg) : null,
+      gasolina95_min: record.gasolina95_min ? parseFloat(record.gasolina95_min) : null,
+      gasolina95_max: record.gasolina95_max ? parseFloat(record.gasolina95_max) : null,
+      gasolina98_avg: record.gasolina98_avg ? parseFloat(record.gasolina98_avg) : null,
+      gasolina98_min: record.gasolina98_min ? parseFloat(record.gasolina98_min) : null,
+      gasolina98_max: record.gasolina98_max ? parseFloat(record.gasolina98_max) : null,
+      gasoleoa_avg: record.gasoleoa_avg ? parseFloat(record.gasoleoa_avg) : null,
+      gasoleoa_min: record.gasoleoa_min ? parseFloat(record.gasoleoa_min) : null,
+      gasoleoa_max: record.gasoleoa_max ? parseFloat(record.gasoleoa_max) : null,
+      gasoleob_avg: record.gasoleob_avg ? parseFloat(record.gasoleob_avg) : null,
+      gasoleob_min: record.gasoleob_min ? parseFloat(record.gasoleob_min) : null,
+      gasoleob_max: record.gasoleob_max ? parseFloat(record.gasoleob_max) : null,
+      gasoleoplus_avg: record.gasoleoplus_avg ? parseFloat(record.gasoleoplus_avg) : null,
+      gasoleoplus_min: record.gasoleoplus_min ? parseFloat(record.gasoleoplus_min) : null,
+      gasoleoplus_max: record.gasoleoplus_max ? parseFloat(record.gasoleoplus_max) : null,
+    }));
+
+    res.json(formattedHistory);
   } catch (error) {
     console.error('Error en /api/fuel-prices/history:', error);
     res.status(500).json({ error: 'Error al obtener historial de precios' });
