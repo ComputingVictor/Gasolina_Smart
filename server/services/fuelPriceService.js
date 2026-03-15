@@ -226,12 +226,12 @@ const getPriceHistory = async (days = 30) => {
   try {
     const query = `
       SELECT * FROM fuel_price_history
-      ORDER BY date DESC
-      LIMIT $1;
+      WHERE date >= CURRENT_DATE - INTERVAL '1 day' * $1
+      ORDER BY date ASC;
     `;
 
     const result = await pool.query(query, [days]);
-    return result.rows.reverse(); // Return in ascending order (oldest first)
+    return result.rows; // Already in ascending order
   } catch (error) {
     console.error('❌ Error al obtener historial de precios:', error);
     throw error;
