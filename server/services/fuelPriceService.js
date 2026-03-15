@@ -75,6 +75,8 @@ const storeStationHistoricalData = async (stations) => {
     return 0;
   }
 
+  console.log(`📝 Preparando inserción de ${values.length / 15} estaciones`);
+
   const query = `
     INSERT INTO fuel_price_history_by_station (
       station_id, date, station_name, province, city, address, brand,
@@ -93,10 +95,21 @@ const storeStationHistoricalData = async (stations) => {
       gasoleoplus_price = EXCLUDED.gasoleoplus_price
   `;
 
-  await pool.query(query, values);
-  console.log(`✅ ${values.length / 15} registros de estaciones guardados`);
-
-  return values.length / 15;
+  try {
+    await pool.query(query, values);
+    console.log(`✅ ${values.length / 15} registros de estaciones guardados`);
+    return values.length / 15;
+  } catch (error) {
+    console.error('❌ Error al insertar datos de estaciones:', error.message);
+    console.error('Primer registro de muestra:', {
+      station_id: values[0],
+      date: values[1],
+      station_name: values[2],
+      province: values[3],
+      city: values[4]
+    });
+    throw error;
+  }
 };
 
 const fetchAndStoreDailyPrices = async () => {
@@ -105,6 +118,7 @@ const fetchAndStoreDailyPrices = async () => {
 
     // Fetch data from API
     const API_URL = 'https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/';
+    console.log('🌐 Llamando a API del gobierno...');
     const response = await fetch(API_URL);
 
     if (!response.ok) {
@@ -115,6 +129,11 @@ const fetchAndStoreDailyPrices = async () => {
     const stations = data.ListaEESSPrecio || [];
 
     console.log(`📍 ${stations.length} gasolineras obtenidas`);
+
+    if (stations.length === 0) {
+      console.warn('⚠️  La API no devolvió ninguna gasolinera');
+      return null;
+    }
 
     // Calculate statistics for each fuel type
     const fuelStats = {};
